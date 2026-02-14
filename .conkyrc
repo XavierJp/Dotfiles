@@ -1,0 +1,123 @@
+conky.config = {
+    -- Window settings
+    alignment = 'top_left',
+    gap_x = 50,
+    gap_y = 100,
+    minimum_width = 350,
+    maximum_width = 350,
+    
+    -- Transparency and background
+    background = false,
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    own_window_transparent = false,
+    own_window_argb_visual = true,
+    own_window_argb_value = 50,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_colour = '000000',
+    
+    -- Padding and spacing
+    border_inner_margin = 15,
+    border_outer_margin = 10,
+    
+    -- Text settings
+    use_xft = true,
+    font = 'DejaVu Sans Mono:size=10',
+    line_buffer = 3,
+    xftalpha = 0.8,
+    default_color = 'white',
+    default_outline_color = 'black',
+    default_shade_color = 'black',
+    draw_outline = false,
+    draw_shades = true,
+    draw_borders = false,
+    
+    -- Update settings
+    update_interval = 1.0,
+    cpu_avg_samples = 4,
+    net_avg_samples = 4,
+    
+    -- Other
+    double_buffer = true,
+    no_buffers = true,
+    text_buffer_size = 2048,
+    uppercase = false,
+    use_spacer = 'none',
+}
+
+conky.text = [[
+${color white}${font DejaVu Sans Mono:bold:size=12}» CPU${font}${color}
+
+${color white}Usage: ${cpu}% ${alignr}${cpubar 6,100}
+${color white}  Core 1: ${cpu cpu1}% ${cpubar cpu1 6,50} ${alignr}Core 2: ${cpu cpu2}% ${cpubar cpu2 6,50}
+${color white}  Core 3: ${cpu cpu3}% ${cpubar cpu3 6,50} ${alignr}Core 4: ${cpu cpu4}% ${cpubar cpu4 6,50}
+${color white}  Core 5: ${cpu cpu5}% ${cpubar cpu5 6,50} ${alignr}Core 6: ${cpu cpu6}% ${cpubar cpu6 6,50}
+
+${color white}Frequency: ${freq_g}GHz
+${color white}Temperature: ${hwmon 0 temp 1}°C
+${color white}Processes: ${processes} ${alignr}Running: ${running_processes}
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» TOP PROCESSES${font}${color}
+
+${color white}${top name 1} ${alignr}${top cpu 1}%
+${color white}${top name 2} ${alignr}${top cpu 2}%
+${color white}${top name 3} ${alignr}${top cpu 3}%
+${color white}${top name 4} ${alignr}${top cpu 4}%
+${color white}${top name 5} ${alignr}${top cpu 5}%
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» GPU${font}${color}
+
+${color white}Load: ${exec cat /sys/class/drm/card1/device/gpu_busy_percent 2>/dev/null || echo "N/A"}%
+${color white}Temp: ${exec temp=$(cat /sys/class/drm/card1/device/hwmon/hwmon*/temp1_input 2>/dev/null | head -1); if [ -n "$temp" ]; then echo "$((temp/1000))°C"; else echo "N/A"; fi}
+${color white}Power: ${exec power=$(cat /sys/class/drm/card1/device/hwmon/hwmon*/power1_average 2>/dev/null | head -1); if [ -n "$power" ]; then echo "$((power/1000000))W"; else echo "N/A"; fi}
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» MEMORY${font}${color}
+
+${color white}RAM: $mem/$memmax ${alignr}${memperc}%
+${color white}${membar 6}
+${color white}Swap: $swap/$swapmax ${alignr}${swapperc}%
+${color white}${swapbar 6}
+
+${color white}Top Memory:
+${color white}${top_mem name 1} ${alignr}${top_mem mem_res 1}
+${color white}${top_mem name 2} ${alignr}${top_mem mem_res 2}
+${color white}${top_mem name 3} ${alignr}${top_mem mem_res 3}
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» STORAGE${font}${color}
+
+${color white}Root: ${fs_used /}/${fs_size /} ${alignr}${fs_used_perc /}%
+${color white}${fs_bar 6 /}
+${color white}${if_mounted /home}Home: ${fs_used /home}/${fs_size /home} ${alignr}${fs_used_perc /home}%
+${color white}${fs_bar 6 /home}${endif}
+${color white}Disk I/O: ${diskio}
+${color white}Read: ${diskio_read} ${alignr}Write: ${diskio_write}
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» NETWORK${font}${color}
+
+${color white}${if_up wlp12s0}WiFi (wlp12s0): ${addr wlp12s0}
+${color white}Signal: ${wireless_link_qual_perc wlp12s0}% ${alignr}Band: ${wireless_freq wlp12s0}
+${color white}Down: ${downspeed wlp12s0}/s ${alignr}Up: ${upspeed wlp12s0}/s
+${color white}${downspeedgraph wlp12s0 30,140 ffffff ffffff} ${alignr}${upspeedgraph wlp12s0 30,140 ffffff ffffff}
+${color white}Total: ${totaldown wlp12s0} ${alignr}${totalup wlp12s0}
+${color white}Ping (Router): ${execi 5 ping -c 1 -W 1 192.168.1.254 2>/dev/null | grep 'time=' | sed -E 's/.*time=([0-9.]+) ms.*/\1 ms/' || echo "N/A"}
+${color white}Ping (Internet): ${execi 10 ping -c 1 -W 2 8.8.8.8 2>/dev/null | grep 'time=' | sed -E 's/.*time=([0-9.]+) ms.*/\1 ms/' || echo "N/A"}${endif}
+
+
+${color grey}${stippled_hr 1}${color}
+${color white}${font DejaVu Sans Mono:bold:size=12}» SYSTEM${font}${color}
+
+${color white}Uptime: ${uptime}
+${color white}Load: ${loadavg}
+${color white}Kernel: ${kernel}
+]]
