@@ -1,0 +1,26 @@
+# Font
+font-family = JetBrains Mono
+font-size = 11
+
+# Theme
+theme = TokyoNight Night
+
+# Window
+window-padding-x = 4
+window-padding-y = 4
+window-decoration = true
+
+# Tab bar
+window-show-tab-bar = always
+gtk-tabs-location = top
+window-theme = dark
+gtk-titlebar = false
+gtk-wide-tabs = false
+gtk-titlebar-style = tabs
+
+# Cursor
+cursor-style = bar
+cursor-style-blink = false
+
+# Misc
+copy-on-select = clipboard
