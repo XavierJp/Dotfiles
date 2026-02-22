@@ -7,7 +7,7 @@
 # ============================================================================
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 BOXNAME="dev"
 IMAGE="ubuntu:24.04"
 
@@ -34,9 +34,9 @@ setup_host_symlinks() {
     ln -sf "$DOTFILES_DIR/ghostty/config" ~/.config/ghostty/config
     log "Ghostty config linked"
 
-    # Git (shared via home dir with distrobox)
-    ln -sf "$DOTFILES_DIR/git/gitconfig" ~/.gitconfig
-    log "Git config linked"
+    # Git — distrobox shares the host home dir, so ~/.gitconfig works as-is.
+    # Add a symlink here if you later create a dotfiles/git/gitconfig file.
+    log "Git config: using existing host ~/.gitconfig"
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
