@@ -8,19 +8,22 @@ theme = TokyoNight Night
 # Window
 window-padding-x = 4
 window-padding-y = 4
-window-decoration = true
+window-decoration = false
 
 # Tab bar
 window-show-tab-bar = always
 gtk-tabs-location = top
 window-theme = dark
-gtk-titlebar = false
+gtk-titlebar = true
 gtk-wide-tabs = false
 gtk-titlebar-style = tabs
 
 # Cursor
 cursor-style = bar
-cursor-style-blink = false
+cursor-style-blink = true
+
+# Command
+command = distrobox enter dev
 
 # Misc
 copy-on-select = clipboard

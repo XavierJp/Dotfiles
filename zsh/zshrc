@@ -70,7 +70,7 @@ ZSH_THEME="arrow-custom"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -103,16 +103,38 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
+# ── NVM ───────────────────────────────────────────────────────────────────
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# PostgreSQL
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+# ── PATH ──────────────────────────────────────────────────────────────────
 export PATH="$HOME/.local/bin:$PATH"
 
-# Load local secrets (not in version control)
+# ── fzf ───────────────────────────────────────────────────────────────────
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# ── zoxide (cd replacement) ──────────────────────────────────────────────
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
+# ── eza (ls replacement) ─────────────────────────────────────────────────
+if command -v eza &>/dev/null; then
+  alias ls='eza'
+  alias ll='eza -la --git'
+  alias lt='eza --tree --level=2'
+fi
+
+# ── bat (cat replacement, binary is "batcat" on Ubuntu) ──────────────────
+if command -v batcat &>/dev/null; then
+  alias bat='batcat'
+  alias cat='batcat --paging=never'
+elif command -v bat &>/dev/null; then
+  alias cat='bat --paging=never'
+fi
+
+# ── fd (binary is "fdfind" on Ubuntu) ────────────────────────────────────
+command -v fdfind &>/dev/null && alias fd='fdfind'
+
+# ── Load local secrets (not in version control) ──────────────────────────
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 

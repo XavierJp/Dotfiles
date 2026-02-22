@@ -47,7 +47,8 @@ create_box() {
         warn "Distrobox '$BOXNAME' already exists. Skipping creation."
     else
         info "Creating distrobox '$BOXNAME' from $IMAGE..."
-        distrobox create --name "$BOXNAME" --image "$IMAGE" --yes
+        distrobox create --name "$BOXNAME" --image "$IMAGE" --yes \
+            --pre-init-hooks "userdel -r ubuntu 2>/dev/null; true"
         log "Distrobox '$BOXNAME' created"
     fi
 }
@@ -120,7 +121,8 @@ fi
 
 # ── Oh My Zsh ──────────────────────────────────────────────────────────────
 echo ">>> Installing Oh My Zsh..."
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
+if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+    rm -rf "$HOME/.oh-my-zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
@@ -131,15 +133,18 @@ ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ] && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 
+# Custom theme
+mkdir -p "$ZSH_CUSTOM/themes"
+ln -sf "$DOTFILES_DIR/zsh/arrow-custom.zsh-theme" "$ZSH_CUSTOM/themes/arrow-custom.zsh-theme"
+
 # ── NVM + Node.js ──────────────────────────────────────────────────────────
 echo ">>> Installing nvm + Node.js LTS..."
 if [ ! -d "$HOME/.nvm" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 fi
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="${NVM_DIR:-$HOME/.config/nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 nvm install --lts
-nvm use --lts
 
 # ── Neovim ─────────────────────────────────────────────────────────────────
 echo ">>> Installing Neovim..."
@@ -211,10 +216,8 @@ main() {
     log "All done! Enter your dev environment with:"
     echo "    distrobox enter dev"
     echo ""
-    info "Don't forget to:"
-    echo "    1. Update git/gitconfig with your name and email"
-    echo "    2. Set up your SSH key in ~/.ssh/"
-    echo "    3. Run 'claude' inside the distrobox to authenticate"
+    info "Git and SSH are shared from the host automatically."
+    info "To authenticate Claude Code, run 'claude' inside the distrobox."
     echo ""
 }
 
