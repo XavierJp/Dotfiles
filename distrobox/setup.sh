@@ -175,6 +175,12 @@ if ! command -v uv &>/dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
 fi
 
+# ── Bruin CLI ─────────────────────────────────────────────────────────
+echo ">>> Installing Bruin CLI..."
+if ! command -v bruin &>/dev/null; then
+    curl -LsSf https://getbruin.com/install/cli | sh
+fi
+
 # ── Claude Code ────────────────────────────────────────────────────────────
 echo ">>> Installing Claude Code..."
 if ! command -v claude &>/dev/null; then
