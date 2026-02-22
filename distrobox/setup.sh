@@ -161,6 +161,20 @@ if [ ! -d "$HOME/.config/nvim" ]; then
     git clone https://github.com/nvim-lua/kickstart.nvim.git "$HOME/.config/nvim"
 fi
 
+# ── Google Cloud CLI ──────────────────────────────────────────────────────
+echo ">>> Installing Google Cloud CLI..."
+if ! command -v gcloud &>/dev/null; then
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
+    sudo apt-get update && sudo apt-get install -y google-cloud-cli
+fi
+
+# ── uv (Python package manager) ───────────────────────────────────────────
+echo ">>> Installing uv..."
+if ! command -v uv &>/dev/null; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+
 # ── Claude Code ────────────────────────────────────────────────────────────
 echo ">>> Installing Claude Code..."
 if ! command -v claude &>/dev/null; then
