@@ -1,6 +1,6 @@
 # dotfiles
 
-.files for an easy macOS config
+.files for an easy macOS or Linux config
 
 ## Prerequisites
 
