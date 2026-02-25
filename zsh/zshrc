@@ -137,6 +137,3 @@ command -v fdfind &>/dev/null && alias fd='fdfind'
 
 # ── Load local secrets (not in version control) ──────────────────────────
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
-
-. "$HOME/.local/share/../bin/env"
