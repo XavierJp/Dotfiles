@@ -140,3 +140,5 @@ command -v fdfind &>/dev/null && alias fd='fdfind'
 
 
 . "$HOME/.local/share/../bin/env"
+
+. "$HOME/.bruin/env"

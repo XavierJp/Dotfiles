@@ -48,7 +48,7 @@ create_box() {
     else
         info "Creating distrobox '$BOXNAME' from $IMAGE..."
         distrobox create --name "$BOXNAME" --image "$IMAGE" --yes \
-            --pre-init-hooks "userdel -r ubuntu 2>/dev/null; true"
+            --pre-init-hooks "userdel -r ubuntu 2>/dev/null || true"
         log "Distrobox '$BOXNAME' created"
     fi
 }
