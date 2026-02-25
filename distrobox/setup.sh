@@ -209,6 +209,25 @@ if ! command -v bruin &>/dev/null; then
     curl -LsSf https://getbruin.com/install/cli | sh
 fi
 
+# ── zellij ────────────────────────────────────────────────────────────
+echo ">>> Installing zellij..."
+if ! command -v zellij &>/dev/null; then
+    curl -Lo zellij.tar.gz "https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz"
+    tar xf zellij.tar.gz
+    sudo install zellij /usr/local/bin
+    rm -f zellij zellij.tar.gz
+fi
+
+# ── spotify_player (Spotify TUI) ─────────────────────────────────────
+echo ">>> Installing spotify_player..."
+sudo apt install -y libasound2-dev
+if ! command -v spotify_player &>/dev/null; then
+    curl -Lo spotify_player.tar.gz "https://github.com/aome510/spotify-player/releases/latest/download/spotify_player-x86_64-unknown-linux-gnu.tar.gz"
+    tar xf spotify_player.tar.gz
+    sudo install spotify_player /usr/local/bin
+    rm -f spotify_player spotify_player.tar.gz
+fi
+
 # ── Claude Code ────────────────────────────────────────────────────────────
 echo ">>> Installing Claude Code..."
 if ! command -v claude &>/dev/null; then
