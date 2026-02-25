@@ -8,8 +8,8 @@ ICON_GIT=$'\uf418'      #
 ICON_PYTHON=$'\ue73c'   #
 ICON_NODE=$'\ue718'     #
 ICON_TIMER=$'\uf520'    #
-ICON_UP=$'\uf55c'       # ↑
-ICON_DOWN=$'\uf544'     # ↓
+ICON_UP=$'\uf062'       #
+ICON_DOWN=$'\uf063'     #
 ICON_STASH=$'\uf48e'    #
 
 # Command duration tracking
@@ -111,7 +111,7 @@ function exit_code() {
 }
 
 # Left prompt: [root] directory ➤
-PROMPT='$(exit_code)${root_indicator}%F{$NCOLOR}%c ➤ %f'
+PROMPT='${root_indicator}%F{$NCOLOR}%c ➤ %f'
 
 # Right prompt: duration | git | python | node
 RPROMPT='$(cmd_duration)$(git_info)$(python_info)$(node_info)'

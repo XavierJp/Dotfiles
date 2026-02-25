@@ -71,7 +71,7 @@ sudo apt update && sudo apt upgrade -y
 echo ">>> Installing core packages..."
 sudo apt install -y \
     build-essential git curl wget unzip \
-    zsh \
+    zsh tmux \
     python3 python3-pip python3-venv \
     openssh-client \
     bat fd-find \
@@ -119,6 +119,28 @@ if ! command -v lazygit &>/dev/null; then
     rm -f lazygit lazygit.tar.gz
 fi
 
+# ── yazi ──────────────────────────────────────────────────────────────────
+echo ">>> Installing yazi..."
+if ! command -v yazi &>/dev/null; then
+    YAZI_VERSION=$(curl -s "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo yazi.zip "https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.zip"
+    unzip -o yazi.zip
+    sudo install yazi-x86_64-unknown-linux-gnu/yazi /usr/local/bin
+    rm -rf yazi.zip yazi-x86_64-unknown-linux-gnu
+fi
+
+# ── lazydocker ────────────────────────────────────────────────────────────
+echo ">>> Installing lazydocker..."
+if ! command -v lazydocker &>/dev/null; then
+    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+fi
+
+# ── rtk (Rust Token Killer) ──────────────────────────────────────────────
+echo ">>> Installing rtk..."
+if ! command -v rtk &>/dev/null; then
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+fi
+
 # ── Oh My Zsh ──────────────────────────────────────────────────────────────
 echo ">>> Installing Oh My Zsh..."
 if [ ! -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
@@ -159,6 +181,12 @@ fi
 echo ">>> Setting up kickstart.nvim..."
 if [ ! -d "$HOME/.config/nvim" ]; then
     git clone https://github.com/nvim-lua/kickstart.nvim.git "$HOME/.config/nvim"
+fi
+
+# Fix mason-tool-installer package name (lua_ls is the lspconfig name, not the Mason name)
+if grep -q "'lua_ls'" "$HOME/.config/nvim/init.lua" 2>/dev/null; then
+    sed -i "s/'lua_ls'/'lua-language-server'/" "$HOME/.config/nvim/init.lua"
+    echo ">>> Fixed lua_ls → lua-language-server in nvim config"
 fi
 
 # ── Google Cloud CLI ──────────────────────────────────────────────────────
