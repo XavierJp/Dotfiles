@@ -1,0 +1,7 @@
+[user]
+	email = xavier@parsio.ai
+	name = Xavier
+[pull]
+	rebase = false
+[core]
+	editor = nvim

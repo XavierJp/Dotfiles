@@ -124,6 +124,9 @@ if command -v eza &>/dev/null; then
   alias lt='eza --tree --level=2'
 fi
 
+# ── vim → nvim ───────────────────────────────────────────────────────────
+command -v nvim &>/dev/null && alias vim='nvim'
+
 # ── bat (cat replacement, binary is "batcat" on Ubuntu) ──────────────────
 if command -v batcat &>/dev/null; then
   alias bat='batcat'

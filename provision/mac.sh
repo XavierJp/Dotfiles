@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================================
-# setup.sh — Idempotent dev environment setup for macOS
+# mac.sh — Idempotent dev environment setup for macOS
 #
-# Usage:  ~/dotfiles/mac/setup.sh
+# Usage:  ~/dotfiles/provision/mac.sh
 # ============================================================================
 set -euo pipefail
 
@@ -80,6 +80,7 @@ install_brew_packages() {
         neovim
         nvm
         uv
+        pnpm
 
         # Cloud
         google-cloud-sdk
@@ -137,11 +138,6 @@ setup_omz() {
         git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
     fi
     log "OMZ plugins ready"
-
-    # Custom theme
-    mkdir -p "$ZSH_CUSTOM/themes"
-    ln -sf "$DOTFILES_DIR/zsh/arrow-custom.zsh-theme" "$ZSH_CUSTOM/themes/arrow-custom.zsh-theme"
-    log "Custom theme linked"
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -209,13 +205,6 @@ setup_claude() {
         curl -fsSL https://claude.ai/install.sh | bash
         log "Claude Code installed"
     fi
-
-    # Claude Code settings
-    mkdir -p "$HOME/.claude"
-    if [ -f "$DOTFILES_DIR/claude-code/settings.json" ]; then
-        ln -sf "$DOTFILES_DIR/claude-code/settings.json" "$HOME/.claude/settings.json"
-        log "Claude Code settings linked"
-    fi
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -237,16 +226,10 @@ setup_iterm2() {
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 11. Symlinks (zshrc, git)
+# 11. Common symlinks (zshrc, gitconfig, OMZ theme, claude-code settings)
 # ──────────────────────────────────────────────────────────────────────────────
 setup_symlinks() {
-    info "Setting up symlinks..."
-
-    # Zshrc
-    ln -sf "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
-    log "zshrc linked"
-
-    log "Git config: using existing ~/.gitconfig"
+    bash "$DOTFILES_DIR/setup.sh"
 }
 
 # ──────────────────────────────────────────────────────────────────────────────

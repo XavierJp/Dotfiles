@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================================
-# setup.sh — Create and configure the "dev" distrobox on Bazzite
+# distrobox.sh — Create and configure the "dev" distrobox on Bazzite
 #
-# Usage:  ~/dotfiles/setup.sh
+# Usage:  ~/dotfiles/provision/distrobox.sh
 # Run from the Bazzite HOST (not inside a distrobox).
 # ============================================================================
 set -euo pipefail
@@ -24,7 +24,7 @@ warn() { echo -e "${YELLOW}[!]${NC} $*"; }
 err()  { echo -e "${RED}[✗]${NC} $*"; }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 1. Symlink host-side configs (Ghostty, Git)
+# 1. Symlink host-side configs (Ghostty)
 # ──────────────────────────────────────────────────────────────────────────────
 setup_host_symlinks() {
     info "Setting up host-side symlinks..."
@@ -33,10 +33,6 @@ setup_host_symlinks() {
     mkdir -p ~/.config/ghostty
     ln -sf "$DOTFILES_DIR/ghostty/config" ~/.config/ghostty/config
     log "Ghostty config linked"
-
-    # Git — distrobox shares the host home dir, so ~/.gitconfig works as-is.
-    # Add a symlink here if you later create a dotfiles/git/gitconfig file.
-    log "Git config: using existing host ~/.gitconfig"
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -155,10 +151,6 @@ ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ] && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 
-# Custom theme
-mkdir -p "$ZSH_CUSTOM/themes"
-ln -sf "$DOTFILES_DIR/zsh/arrow-custom.zsh-theme" "$ZSH_CUSTOM/themes/arrow-custom.zsh-theme"
-
 # ── NVM + Node.js ──────────────────────────────────────────────────────────
 echo ">>> Installing nvm + Node.js LTS..."
 if [ ! -d "$HOME/.nvm" ]; then
@@ -167,6 +159,12 @@ fi
 export NVM_DIR="${NVM_DIR:-$HOME/.config/nvm}"
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 nvm install --lts
+
+# ── pnpm ──────────────────────────────────────────────────────────────────
+echo ">>> Installing pnpm..."
+if ! command -v pnpm &>/dev/null; then
+    curl -fsSL https://get.pnpm.io/install.sh | sh -
+fi
 
 # ── Neovim ─────────────────────────────────────────────────────────────────
 echo ">>> Installing Neovim..."
@@ -234,15 +232,9 @@ if ! command -v claude &>/dev/null; then
     curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-# Claude Code settings
-mkdir -p "$HOME/.claude"
-if [ -f "$DOTFILES_DIR/claude-code/settings.json" ]; then
-    ln -sf "$DOTFILES_DIR/claude-code/settings.json" "$HOME/.claude/settings.json"
-fi
-
-# ── Symlink zshrc ──────────────────────────────────────────────────────────
-echo ">>> Linking zshrc..."
-ln -sf "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
+# ── Common symlinks (zshrc, gitconfig, OMZ theme, claude-code settings) ──
+echo ">>> Running common symlink setup..."
+bash "$DOTFILES_DIR/setup.sh"
 
 # ── Set default shell to zsh ──────────────────────────────────────────────
 echo ">>> Setting zsh as default shell..."
