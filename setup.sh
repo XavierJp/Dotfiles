@@ -45,6 +45,15 @@ setup_common_symlinks() {
         ln -sf "$DOTFILES_DIR/claude-code/settings.json" "$HOME/.claude/settings.json"
         log "Claude Code settings linked"
     fi
+
+    # Neovim config
+    mkdir -p "$HOME/.config"
+    if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
+        info "Removing old nvim config..."
+        rm -rf "$HOME/.config/nvim"
+    fi
+    ln -sfn "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+    log "Neovim config linked"
 }
 
 # Run if executed directly (not sourced)

@@ -165,6 +165,7 @@ echo ">>> Installing pnpm..."
 if ! command -v pnpm &>/dev/null; then
     curl -fsSL https://get.pnpm.io/install.sh | sh -
 fi
+export PATH="$HOME/.local/share/pnpm:$PATH"
 
 # ── Neovim ─────────────────────────────────────────────────────────────────
 echo ">>> Installing Neovim..."
@@ -175,16 +176,29 @@ if ! command -v nvim &>/dev/null; then
     rm -f nvim-linux-x86_64.tar.gz
 fi
 
-# kickstart.nvim
-echo ">>> Setting up kickstart.nvim..."
-if [ ! -d "$HOME/.config/nvim" ]; then
-    git clone https://github.com/nvim-lua/kickstart.nvim.git "$HOME/.config/nvim"
+# Neovim config is handled by setup.sh symlink (dotfiles/nvim → ~/.config/nvim)
+
+# JetBrains Mono Nerd Font
+echo ">>> Installing JetBrains Mono Nerd Font..."
+if ! fc-list | grep -qi "JetBrainsMono Nerd Font"; then
+    NERD_FONT_VERSION=$(curl -s "https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
+    curl -Lo JetBrainsMono.tar.xz "https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONT_VERSION}/JetBrainsMono.tar.xz"
+    mkdir -p "$HOME/.local/share/fonts/JetBrainsMono"
+    tar -xf JetBrainsMono.tar.xz -C "$HOME/.local/share/fonts/JetBrainsMono"
+    fc-cache -f
+    rm -f JetBrainsMono.tar.xz
+    echo ">>> JetBrains Mono Nerd Font installed"
 fi
 
-# Fix mason-tool-installer package name (lua_ls is the lspconfig name, not the Mason name)
-if grep -q "'lua_ls'" "$HOME/.config/nvim/init.lua" 2>/dev/null; then
-    sed -i "s/'lua_ls'/'lua-language-server'/" "$HOME/.config/nvim/init.lua"
-    echo ">>> Fixed lua_ls → lua-language-server in nvim config"
+# ── Neovide (GUI forwarded from distrobox to host) ───────────────────────
+echo ">>> Installing Neovide..."
+if ! command -v neovide &>/dev/null; then
+    NEOVIDE_VERSION=$(curl -s "https://api.github.com/repos/neovide/neovide/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
+    curl -Lo neovide.tar.gz "https://github.com/neovide/neovide/releases/download/${NEOVIDE_VERSION}/neovide-linux-x86_64.tar.gz"
+    tar xf neovide.tar.gz
+    sudo install neovide /usr/local/bin
+    rm -f neovide neovide.tar.gz
+    echo ">>> Neovide installed"
 fi
 
 # ── Google Cloud CLI ──────────────────────────────────────────────────────

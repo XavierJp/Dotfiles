@@ -163,21 +163,35 @@ setup_node() {
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
-# 7. Neovim config (kickstart.nvim)
+# 7. Neovim config (handled by setup.sh symlink)
 # ──────────────────────────────────────────────────────────────────────────────
 setup_neovim() {
-    if [ -d "$HOME/.config/nvim" ]; then
-        log "Neovim config already exists"
-    else
-        info "Setting up kickstart.nvim..."
-        git clone https://github.com/nvim-lua/kickstart.nvim.git "$HOME/.config/nvim"
-        log "kickstart.nvim installed"
-    fi
+    log "Neovim config managed via dotfiles symlink (setup.sh)"
+}
 
-    # Fix mason-tool-installer package name (lua_ls is the lspconfig name, not the Mason name)
-    if grep -q "'lua_ls'" "$HOME/.config/nvim/init.lua" 2>/dev/null; then
-        sed -i '' "s/'lua_ls'/'lua-language-server'/" "$HOME/.config/nvim/init.lua"
-        log "Fixed lua_ls → lua-language-server in nvim config"
+# ──────────────────────────────────────────────────────────────────────────────
+# 7b. JetBrains Mono Nerd Font
+# ──────────────────────────────────────────────────────────────────────────────
+setup_nerd_font() {
+    if brew list --cask font-jetbrains-mono-nerd-font &>/dev/null; then
+        log "JetBrains Mono Nerd Font already installed"
+    else
+        info "Installing JetBrains Mono Nerd Font..."
+        brew install --cask font-jetbrains-mono-nerd-font
+        log "JetBrains Mono Nerd Font installed"
+    fi
+}
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 7c. Neovide
+# ──────────────────────────────────────────────────────────────────────────────
+setup_neovide() {
+    if brew list --cask neovide &>/dev/null; then
+        log "Neovide already installed"
+    else
+        info "Installing Neovide..."
+        brew install --cask neovide
+        log "Neovide installed"
     fi
 }
 
@@ -278,6 +292,8 @@ main() {
     setup_omz
     setup_node
     setup_neovim
+    setup_nerd_font
+    setup_neovide
     setup_bruin
     setup_claude
     setup_iterm2

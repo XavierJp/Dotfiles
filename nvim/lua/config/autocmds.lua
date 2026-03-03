@@ -1,0 +1,2 @@
+-- Autocmds (LazyVim handles yank-highlight, resize splits, etc.)
+-- Add custom autocommands here if needed.
