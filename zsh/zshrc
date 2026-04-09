@@ -142,6 +142,7 @@ command -v fdfind &>/dev/null && alias fd='fdfind'
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 
-. "$HOME/.local/share/../bin/env"
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 . "$HOME/.bruin/env"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
