@@ -35,6 +35,11 @@ setup_common_symlinks() {
     ln -sf "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
     log "tmux config linked"
 
+    # tmux OSC-52 clipboard helper (required by the copy bindings in tmux.conf)
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$DOTFILES_DIR/tmux/tmux-osc52-copy" "$HOME/.local/bin/tmux-osc52-copy"
+    log "tmux clipboard helper linked"
+
     # OMZ custom theme
     local ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
     if [ -d "$ZSH_CUSTOM" ]; then

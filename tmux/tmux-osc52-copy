@@ -1,0 +1,43 @@
+#!/bin/sh
+# Copy stdin to the local (macOS/cmux) clipboard via OSC 52, over mosh.
+#
+# Why this exists instead of letting tmux do it:
+#   * mosh 1.4 forwards OSC 52 ONLY for the "c" selector. Empty, "p", "s" and
+#     numeric selectors are silently discarded by mosh's terminal emulator.
+#   * tmux's own clipboard writes always use an EMPTY selector -> mosh drops them.
+#   * Pinning "c" with `terminal-overrides ...Ms=` makes tmux 3.6 stop emitting
+#     OSC 52 entirely, so that "fix" is worse than the bug.
+# So we emit the sequence ourselves with an explicit "c" and write it into the
+# pane tty; `set-clipboard on` makes tmux relay it outward with selector intact.
+#
+# Usage: <text on stdin> | tmux-osc52-copy [pane_tty]
+
+tty_target="${1:-$(tmux display -p '#{pane_tty}' 2>/dev/null)}"
+[ -n "$tty_target" ] && [ -w "$tty_target" ] || exit 0
+
+# mosh caps a single OSC string at 16384 bytes and drops anything longer
+# outright, so keep the base64 payload under that (16384 - len("52;c;") - slack).
+MAX_B64=16376
+MAX_RAW=$(( MAX_B64 / 4 * 3 ))     # 12282 bytes of actual text
+
+tmpf=$(mktemp) || exit 0
+cat > "$tmpf"
+size=$(wc -c < "$tmpf")
+
+truncated=0
+if [ "$size" -gt "$MAX_RAW" ]; then
+    b64=$(head -c "$MAX_RAW" "$tmpf" | base64 | tr -d '\r\n')
+    truncated=1
+else
+    b64=$(base64 < "$tmpf" | tr -d '\r\n')
+fi
+rm -f "$tmpf"
+
+# Write the clipboard sequence FIRST. Calling `tmux display-message` before this
+# reliably causes the OSC 52 to be lost (verified A/B over mosh), so the user
+# notification has to come afterwards.
+printf '\033]52;c;%s\a' "$b64" > "$tty_target"
+
+[ "$truncated" -eq 1 ] && tmux display-message \
+    "clipboard: sent first ${MAX_RAW}B of ${size}B (mosh OSC-52 limit); full text is in the tmux buffer"
+exit 0
