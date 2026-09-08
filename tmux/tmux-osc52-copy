@@ -36,7 +36,9 @@ rm -f "$tmpf"
 # Write the clipboard sequence FIRST. Calling `tmux display-message` before this
 # reliably causes the OSC 52 to be lost (verified A/B over mosh), so the user
 # notification has to come afterwards.
-printf '\033]52;c;%s\a' "$b64" > "$tty_target"
+# Never block: a stalled write to the pane tty would hold a tmux job open (and,
+# from a foreground run-shell, wedge the client). Cap it at 2s and give up.
+B64="$b64" timeout 2 sh -c 'printf "\033]52;c;%s\a" "$B64" > "$0"' "$tty_target"
 
 [ "$truncated" -eq 1 ] && tmux display-message \
     "clipboard: sent first ${MAX_RAW}B of ${size}B (mosh OSC-52 limit); full text is in the tmux buffer"
