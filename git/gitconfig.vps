@@ -1,0 +1,10 @@
+# The VPS commits and pushes as the xavier-devbox GitHub App; gh holds its token.
+[user]
+	email = 337976485+xavier-devbox[bot]@users.noreply.github.com
+	name = xavier-devbox[bot]
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential

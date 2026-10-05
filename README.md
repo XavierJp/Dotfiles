@@ -16,13 +16,14 @@
 | Config | Description |
 |--------|-------------|
 | `zsh/` | zshrc + custom Oh My Zsh theme |
-| `git/` | gitconfig |
+| `git/` | shared git settings (`config`) + identity: Xavier (`gitconfig`), or the devbox bot on the VPS (`gitconfig.vps`) |
 | `nvim/` | Neovim config (lazy.nvim) |
 | `ghostty/` | terminal config |
 | `tmux/` | tmux.conf |
 | `iterm2/` | preferences plist (macOS) |
 | `.conkyrc` | system monitor, Bazzite host (Linux) |
 | `claude-code/` | Claude Code settings |
+| `agents/` | global agent instructions + GitHub App login (VPS) |
 | `provision/` | platform bootstrap scripts (mac, distrobox, vps) |
 
 ---

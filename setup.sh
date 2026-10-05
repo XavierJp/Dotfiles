@@ -27,7 +27,9 @@ setup_common_symlinks() {
     ln -sf "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
     log "zshrc linked"
 
-    # Gitconfig
+    # Git: shared settings in the XDG file, identity in ~/.gitconfig (vps.sh swaps it)
+    mkdir -p "$HOME/.config/git"
+    ln -sf "$DOTFILES_DIR/git/config" "$HOME/.config/git/config"
     ln -sf "$DOTFILES_DIR/git/gitconfig" "$HOME/.gitconfig"
     log "gitconfig linked"
 

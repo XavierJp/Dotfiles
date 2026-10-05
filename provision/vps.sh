@@ -270,6 +270,33 @@ setup_symlinks() {
     bash "$DOTFILES_DIR/setup.sh"
 }
 
+# Global instructions for coding agents (Claude Code, pi) + the GitHub App login
+# they call on auth failure. The App's env and key stay in ~/.config/agent, untracked.
+setup_agents() {
+    local agent_dir="$HOME/.config/agent"
+    mkdir -p "$agent_dir" "$HOME/.claude" "$HOME/.pi/agent"
+    ln -sf "$DOTFILES_DIR/agents/gh-login.sh" "$agent_dir/gh-login.sh"
+    ln -sf "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.claude/CLAUDE.md"
+    ln -sf "$DOTFILES_DIR/agents/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+    log "Agent instructions linked"
+
+    # The App key never enters this (public) repo; env is seeded from a blank template.
+    if [ ! -f "$agent_dir/env" ]; then
+        install -m 600 "$DOTFILES_DIR/agents/env.example" "$agent_dir/env"
+        warn "Fill in $agent_dir/env with the GitHub App's ids."
+    fi
+    if [ ! -f "$agent_dir/app.pem" ]; then
+        warn "Copy the GitHub App's private key to $agent_dir/app.pem (chmod 600),"
+        warn "then run $agent_dir/gh-login.sh."
+    else
+        chmod 600 "$agent_dir/app.pem"
+    fi
+
+    # The VPS is the devbox: its identity replaces Xavier's, never layers on it.
+    ln -sf "$DOTFILES_DIR/git/gitconfig.vps" "$HOME/.gitconfig"
+    log "gitconfig linked as xavier-devbox[bot]"
+}
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 7. Default shell
 # ──────────────────────────────────────────────────────────────────────────────
@@ -311,6 +338,7 @@ main() {
     install_gcloud
     install_claude
     setup_symlinks
+    setup_agents
     setup_default_shell
 
     echo ""
