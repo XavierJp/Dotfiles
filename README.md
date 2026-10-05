@@ -16,7 +16,7 @@
 | Config | Description |
 |--------|-------------|
 | `zsh/` | zshrc + custom Oh My Zsh theme |
-| `git/` | gitconfig |
+| `git/` | shared git settings (`config`) + identity: Xavier (`gitconfig`), or the devbox bot on the VPS (`gitconfig.vps`) |
 | `nvim/` | Neovim config (lazy.nvim) |
 | `ghostty/` | terminal config |
 | `tmux/` | tmux.conf |
@@ -46,4 +46,4 @@ cd ~/dotfiles
 
 ### 🔒 Local overrides
 
-Machine-specific settings go in `~/.zshrc.local` and `~/.gitconfig.local` (not tracked). On the VPS, `provision/vps.sh` writes the latter: git commits and pushes as the `xavier-devbox[bot]` GitHub App.
+Machine-specific settings go in `~/.zshrc.local` (not tracked).

@@ -292,27 +292,9 @@ setup_agents() {
         chmod 600 "$agent_dir/app.pem"
     fi
 
-    setup_git_identity
-}
-
-# The VPS commits and pushes as the App's bot, not as Xavier. This lives in the
-# untracked ~/.gitconfig.local, which git/gitconfig includes last so it wins.
-setup_git_identity() {
-    local local_config="$HOME/.gitconfig.local"
-    local gh_helper
-    gh_helper="!$(command -v gh) auth git-credential"
-
-    git config --file "$local_config" user.name 'xavier-devbox[bot]'
-    git config --file "$local_config" user.email '337976485+xavier-devbox[bot]@users.noreply.github.com'
-
-    # The empty helper resets any inherited one, so git asks gh, which holds the App token.
-    local host
-    for host in https://github.com https://gist.github.com; do
-        git config --file "$local_config" --unset-all "credential.$host.helper" || true
-        git config --file "$local_config" --add "credential.$host.helper" ''
-        git config --file "$local_config" --add "credential.$host.helper" "$gh_helper"
-    done
-    log "Git identity set to xavier-devbox[bot] in $local_config"
+    # The VPS is the devbox: its identity replaces Xavier's, never layers on it.
+    ln -sf "$DOTFILES_DIR/git/gitconfig.vps" "$HOME/.gitconfig"
+    log "gitconfig linked as xavier-devbox[bot]"
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
