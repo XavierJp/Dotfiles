@@ -23,6 +23,7 @@
 | `iterm2/` | preferences plist (macOS) |
 | `.conkyrc` | system monitor, Bazzite host (Linux) |
 | `claude-code/` | Claude Code settings |
+| `agents/` | global agent instructions + GitHub App login (VPS) |
 | `provision/` | platform bootstrap scripts (mac, distrobox, vps) |
 
 ---
