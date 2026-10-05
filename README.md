@@ -46,4 +46,4 @@ cd ~/dotfiles
 
 ### 🔒 Local overrides
 
-Machine-specific settings go in `~/.zshrc.local` (not tracked).
+Machine-specific settings go in `~/.zshrc.local` and `~/.gitconfig.local` (not tracked). On the VPS, `provision/vps.sh` writes the latter: git commits and pushes as the `xavier-devbox[bot]` GitHub App.
